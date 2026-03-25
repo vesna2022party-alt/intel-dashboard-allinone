@@ -1,15 +1,7 @@
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
-from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 @app.get("/api/regions")
 def regions():
@@ -22,7 +14,7 @@ def regions():
 
 @app.get("/", response_class=HTMLResponse)
 def home():
-    return \"\"\"
+    return """
 <!DOCTYPE html>
 <html>
 <head>
@@ -45,7 +37,10 @@ function App(){
   useEffect(()=>{
     fetch("/api/regions")
       .then(r=>r.json())
-      .then(setData);
+      .then(setData)
+      .catch(err => {
+        document.body.innerHTML = "<h1 style='color:red'>API ERROR</h1>";
+      });
   },[]);
 
   return React.createElement("div",null,
@@ -60,4 +55,4 @@ ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(
 </script>
 </body>
 </html>
-\"\"\"
+"""
